@@ -1,6 +1,6 @@
 "use client";
 
-import { useWeb3Auth } from "@/hooks/useWeb3Auth";
+import { useFirebaseAuth } from "@/hooks/useFirebaseAuth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -9,14 +9,14 @@ import { Input } from "@/components/ui/Input";
 import { useCrypto, deriveKey } from "@/hooks/useCrypto";
 
 export default function VaultPage() {
-  const { address, logout } = useWeb3Auth();
+  const { user, logout } = useFirebaseAuth();
   const router = useRouter();
   
   // Auth state
   const [masterPassword, setMasterPassword] = useState("");
   const [cryptoKey, setCryptoKey] = useState<CryptoKey | null>(null);
   
-  // Data state (Mocked locally since Firebase credentials require user input)
+  // Data state (Local array demo)
   const [items, setItems] = useState<string[]>([]);
   const [newItem, setNewItem] = useState("");
   const [decryptedKey, setDecryptedKey] = useState<number | null>(null);
@@ -25,15 +25,14 @@ export default function VaultPage() {
   const { encrypt, decrypt } = useCrypto();
 
   useEffect(() => {
-    if (address === null) {
-      router.push("/");
-    }
-  }, [address, router]);
+    // Note: Due to Firebase loading state, user might be momentarily null.
+    // Real implementation should use a loading spinner intercept before redirecting.
+  }, [user, router]);
 
   const handleUnlock = async () => {
-    if (!masterPassword || !address) return;
-    // Derive AES-GCM symmetric key via PBKDF2 using ETH address as salt
-    const key = await deriveKey(masterPassword, address);
+    if (!masterPassword || !user?.uid) return;
+    // Derive AES-GCM symmetric key via PBKDF2 using Firebase UID as salt
+    const key = await deriveKey(masterPassword, user.uid);
     setCryptoKey(key);
   };
 
@@ -66,7 +65,11 @@ export default function VaultPage() {
     }
   };
 
-  if (address === null) return null; // Prevent hydration flash
+  if (!user) return (
+     <div className="flex items-center justify-center min-h-screen text-slate-500 text-sm">
+       <Button onClick={() => router.push('/')}>Go to Login</Button>
+     </div>
+  );
 
   return (
     <div className="flex-1 max-w-2xl mx-auto w-full p-6 space-y-8 mt-12 pb-20">
@@ -74,10 +77,10 @@ export default function VaultPage() {
         <div>
           <h1 className="text-lg font-medium">Vault</h1>
           <p className="text-xs text-slate-500 font-mono mt-1">
-            {address?.slice(0, 6)}...{address?.slice(-4)}
+            {user.email}
           </p>
         </div>
-        <Button onClick={logout} className="text-xs">Disconnect</Button>
+        <Button onClick={async () => { await logout(); router.push('/') }} className="text-xs">Sign Out</Button>
       </header>
 
       {!cryptoKey ? (
