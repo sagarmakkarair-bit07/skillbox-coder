@@ -31,51 +31,38 @@ export default function Home() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
-      <div className="w-full max-w-sm space-y-8">
-        <div className="space-y-2">
-          <h1 className="text-xl font-medium tracking-tight">SecureVault</h1>
-          <p className="text-sm text-slate-500 leading-relaxed">Identity anchored in Firebase. Zero-knowledge local encryption.</p>
+      <div className="w-full max-w-xs space-y-6">
+        <div className="space-y-1">
+          <h1 className="text-base font-medium">SecureVault</h1>
+          <p className="text-xs text-neutral-500">Sign in to access your vault.</p>
         </div>
 
         {error && (
-          <div className="border border-red-900 border-l-2 border-l-red-500 text-red-500 p-3 text-sm">
-            {error}
-          </div>
+          <p className="text-xs text-red-500">{error}</p>
         )}
 
-        <form className="space-y-4" onSubmit={handleLogin}>
-          <div className="space-y-2">
-            <Input 
-              type="email" 
-              placeholder="Email" 
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <Input 
-              type="password" 
-              placeholder="Password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+        <form className="space-y-3" onSubmit={handleLogin}>
+          <Input 
+            type="email" 
+            placeholder="Email" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <Input 
+            type="password" 
+            placeholder="Password" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
           
-          <div className="flex gap-2">
-            <Button 
-              type="submit" 
-              disabled={isAuthenticating}
-              className="flex-1"
-            >
+          <div className="flex gap-2 pt-1">
+            <Button type="submit" disabled={isAuthenticating} variant="primary" className="flex-1">
               Sign In
             </Button>
-            <Button 
-              type="button" 
-              onClick={handleRegister} 
-              disabled={isAuthenticating}
-              className="flex-1 bg-transparent text-slate-400 hover:text-white"
-            >
-              Sign Up
+            <Button type="button" onClick={handleRegister} disabled={isAuthenticating} className="flex-1">
+              Create Account
             </Button>
           </div>
         </form>

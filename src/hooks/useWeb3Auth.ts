@@ -7,7 +7,8 @@ import { auth } from '@/lib/firebase/client';
 
 declare global {
   interface Window {
-    ethereum?: any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ethereum?: { request: (args: { method: string; params?: unknown[] }) => Promise<unknown> } & Record<string, unknown>;
   }
 }
 
@@ -56,9 +57,9 @@ export const useWeb3Auth = () => {
       await signInWithCustomToken(auth, token);
       setAddress(userAddress);
       
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Failed to authenticate");
+      setError(err instanceof Error ? err.message : "Failed to authenticate");
     } finally {
       setIsAuthenticating(false);
     }

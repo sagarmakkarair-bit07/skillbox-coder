@@ -2,7 +2,7 @@ import React, { HTMLAttributes } from 'react';
 
 export const Card = ({ children, className = '', ...props }: HTMLAttributes<HTMLDivElement>) => {
   return (
-    <div className={`border border-slate-800 p-6 ${className}`} {...props}>
+    <div className={`border border-[var(--border)] rounded-lg p-5 bg-[var(--surface)] ${className}`} {...props}>
       {children}
     </div>
   );

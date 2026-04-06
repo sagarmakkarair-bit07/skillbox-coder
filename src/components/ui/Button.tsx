@@ -1,9 +1,20 @@
 import React, { ButtonHTMLAttributes } from 'react';
 
-export const Button = ({ children, className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement>) => {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: 'default' | 'primary' | 'ghost' | 'danger';
+}
+
+export const Button = ({ children, className = '', variant = 'default', ...props }: ButtonProps) => {
+  const styles: Record<string, string> = {
+    default: 'border border-[var(--border)] text-[var(--fg-muted)] hover:border-[var(--border-hover)] hover:text-[var(--fg)]',
+    primary: 'bg-white text-black hover:bg-neutral-200',
+    ghost: 'text-[var(--fg-muted)] hover:text-[var(--fg)]',
+    danger: 'text-red-500 hover:text-red-400',
+  };
+
   return (
     <button
-      className={`px-4 py-2 border border-slate-800 text-sm font-medium transition-colors hover:bg-slate-900 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-[13px] rounded-md transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed ${styles[variant]} ${className}`}
       {...props}
     >
       {children}

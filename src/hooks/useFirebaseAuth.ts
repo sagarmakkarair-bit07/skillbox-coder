@@ -27,9 +27,9 @@ export const useFirebaseAuth = () => {
     setError(null);
     try {
       await signInWithEmailAndPassword(auth, email, pass);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || 'Failed to login');
+      setError(err instanceof Error ? err.message : 'Failed to login');
     } finally {
       setIsAuthenticating(false);
     }
@@ -40,9 +40,9 @@ export const useFirebaseAuth = () => {
     setError(null);
     try {
       await createUserWithEmailAndPassword(auth, email, pass);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || 'Failed to register');
+      setError(err instanceof Error ? err.message : 'Failed to register');
     } finally {
       setIsAuthenticating(false);
     }
